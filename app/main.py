@@ -17,7 +17,6 @@ def main():
             if not data:
                 break
             conn.send(b"HTTP/1.1 200 OK\r\n\r\n")
-            conn.sendall(data)
 
 
 
