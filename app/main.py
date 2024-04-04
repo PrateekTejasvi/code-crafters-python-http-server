@@ -28,7 +28,7 @@ def main():
             if request.method == '/':
                 conn.send(b"HTTP/1.1 200 OK\r\n\r\n")
             else:
-                conn.send(b"HTTP/1.1 401 NOT FOUND\r\n\r\n")
+                conn.send(b"HTTP/1.1 404 NOT FOUND\r\n\r\n")
 
             if not data:
                 break   
