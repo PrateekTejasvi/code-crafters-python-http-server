@@ -31,7 +31,9 @@ def main():
                 conn.send(b"HTTP/1.1 401 NOT FOUND\r\n\r\n")
 
             if not data:
-                break
+                break   
+            resp = "HTTP/1.1 200 OK\r\n\r\n".encode()
+            conn.send(resp)
             conn.sendall(data)
 
 
