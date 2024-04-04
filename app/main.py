@@ -2,6 +2,17 @@
 import socket
 
 
+class decodeData(object): 
+    def __init__(self,request): 
+        request = request.decode()
+        lines = request.split('\r\n')
+        method , path,reponse= lines[0].split()
+        self.method = method 
+        self.path = path 
+        self.response = reponse
+
+
+
 def main():
 
     # Uncomment this to pass the first stage
@@ -13,12 +24,19 @@ def main():
     with conn:
         while True:
             data = conn.recv(1024)
+            request = decodeData(data)
+            if request.method == '/':
+                conn.send(b"HTTP/1.1 200 OK\r\n\r\n")
+            else:
+                conn.send(b"HTTP/1.1 401 NOT FOUND\r\n\r\n")
+
             if not data:
                 break
-            conn.send(b"HTTP/1.1 200 OK\r\n\r\n")
             conn.sendall(data)
+
 
 
 
 if __name__ == "__main__":
     main()
+
