@@ -32,12 +32,8 @@ def main():
             elif "/echo/" in request.path:
                 echo= request.path.split("/")
                 print(echo)
-                conn.send(b"HTTP/1.1 200 OK\r\n\r\n")
-                conn.send(b"Content-Type: text/plain\r\n\r\n")
-                echo_len = f"Content-Length: {len(echo[2])}\r\n\r\n".encode('utf-8')
-                conn.send(echo_len)
-                echo_data = f"{echo[2]}".encode('utf-8')
-                conn.send(echo_data)
+                response = f"HTTP/1.1 200 OK\r\n\r\nContent-Type: text/plain\r\n\r\nContent-Length: {len(echo[2])}\r\n\r\n{echo[2]}".encode('utf-8')
+                conn.send(response)
             else:
                 conn.send(b"HTTP/1.1 404 NOT FOUND\r\n\r\n")
             
