@@ -19,10 +19,12 @@ def main():
     #
     server_socket = socket.create_server(("localhost", 4221), reuse_port=True)
     print("listening on port 4221:")
-    conn,addr = server_socket.accept()
 
-    with conn:
-        while True:
+    while True:
+
+        conn,addr = server_socket.accept()
+
+        with conn:
             data = conn.recv(1024)
             request = decodeData(data)
             if request.method == '/':
@@ -33,8 +35,8 @@ def main():
             if not data:
                 break   
             resp = "HTTP/1.1 200 OK\r\n\r\n".encode()
-            conn.send(resp)
-            conn.sendall(data)
+        conn.send(resp)
+        conn.sendall(data)
 
 
 
