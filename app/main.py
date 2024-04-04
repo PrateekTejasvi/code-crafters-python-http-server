@@ -27,7 +27,7 @@ def main():
         with conn:
             data = conn.recv(1024)
             request = decodeData(data)
-            if request.path[0] == '/':
+            if request.path == '/':
                 conn.send(b"HTTP/1.1 200 OK\r\n\r\n")
             else:
                 conn.send(b"HTTP/1.1 404 NOT FOUND\r\n\r\n")
