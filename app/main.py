@@ -34,9 +34,6 @@ def main():
 
             if not data:
                 break   
-            resp = "HTTP/1.1 200 OK\r\n\r\n".encode()
-        conn.send(resp)
-        conn.sendall(data)
 
 
 
