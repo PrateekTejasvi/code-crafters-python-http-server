@@ -47,7 +47,7 @@ def handleConnections():
             break  
 
 def main():
-    threading.Thread(target=handleConnections,args=(conn,addr),daemon=True).start()
+    threading.Thread(target=handleConnections,daemon=True).start()
 
 
 
