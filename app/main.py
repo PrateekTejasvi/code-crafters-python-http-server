@@ -39,7 +39,7 @@ def handleConnections():
                 parsedData = request.userAgent.strip().split(": ")[1]
                 response = sendValidResponse(parsedData)
             else:
-                response = HTTPNotFound
+                response = f"HTTP/1.1 404 NOT FOUND\r\n\r\n".encode('utf-8')
             conn.send(response)
             
 
