@@ -7,7 +7,7 @@ print("listening on port 4221:")
 
 
 
-HTTPOK =  f"HTTP/1.1 200 OK\r\n\r\n".encode('utf-8')
+
 
 class decodeData(object): 
     def __init__(self,request): 
@@ -21,12 +21,13 @@ class decodeData(object):
         self.userAgent = userAgent
 
 
-def sendValidResponse(data):
-    send_resp = f"HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: {len(data)}\r\n\r\n{data}".encode('utf-8')
-    return send_resp
 
 def handleConnections(conn):
-    
+    HTTPOK =  f"HTTP/1.1 200 OK\r\n\r\n".encode('utf-8')
+    def sendValidResponse(data):
+        send_resp = f"HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: {len(data)}\r\n\r\n{data}".encode('utf-8')
+        return send_resp
+
     with conn:
         while True:
             data = conn.recv(1024)
@@ -48,7 +49,7 @@ def main():
         while True:
             conn, addr = server_socket.accept()  # wait for client
             print(f"Connected to: {addr}")
-            client_thread = threading.Thread(handleConnections, args=(conn,))
+            client_thread = threading.Thread(target=handleConnections, args=(conn,))
             client_thread.start()
     finally:
         server_socket.close()
