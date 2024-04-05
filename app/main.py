@@ -4,9 +4,9 @@ import threading
 
 server_socket = socket.create_server(("localhost", 4221), reuse_port=True)
 print("listening on port 4221:")        
-conn,addr = server_socket.accept()
 
-HTTPNotFound =  f"HTTP/1.1 404 NOT FOUND\r\n\r\n".encode('utf-8')
+
+
 HTTPOK =  f"HTTP/1.1 200 OK\r\n\r\n".encode('utf-8')
 
 class decodeData(object): 
@@ -25,7 +25,7 @@ def sendValidResponse(data):
     send_resp = f"HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: {len(data)}\r\n\r\n{data}".encode('utf-8')
     return send_resp
 
-def handleConnections():
+def handleConnections(conn):
      while True:
         with conn:
             data = conn.recv(1024)
@@ -47,12 +47,15 @@ def handleConnections():
             break  
 
 def main():
-    threading.Thread(target=handleConnections,daemon=True).start()
-
-
-
-   
-
+    try: 
+        while True:
+            conn, addr = server_socket.accept()  # wait for client
+            print(f"Connected to: {addr}")
+            client_thread = threading.Thread(handleConnections, args=[conn])
+            client_thread.start()
+    finally:
+        server_socket.close()
+    
 
 if __name__ == "__main__":
     main()
