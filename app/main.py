@@ -1,6 +1,12 @@
 # Uncomment this to pass the first stage
 import socket
 
+server_socket = socket.create_server(("localhost", 4221), reuse_port=True)
+print("listening on port 4221:")        
+conn,addr = server_socket.accept()
+
+HTTPNotFound =  f"HTTP/1.1 404 NOT FOUND\r\n\r\n".encode('utf-8')
+HTTPOK =  f"HTTP/1.1 200 OK\r\n\r\n".encode('utf-8')
 
 class decodeData(object): 
     def __init__(self,request): 
@@ -13,42 +19,33 @@ class decodeData(object):
         self.response = reponse
         self.userAgent = userAgent
 
-    
+
+def sendValidResponse(data):
+    send_resp = f"HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: {len(data)}\r\n\r\n{data}".encode('utf-8')
+    return send_resp
+
 
 def main():
 
-    server_socket = socket.create_server(("localhost", 4221), reuse_port=True)
-    print("listening on port 4221:")
-
-
-
     while True:
-
-        conn,addr = server_socket.accept()
-
         with conn:
             data = conn.recv(1024)
             request = decodeData(data)
             if request.path == '/':
-                response = f"HTTP/1.1 200 OK\r\n\r\n"
+                response = HTTPOK
             elif request.path.startswith("/echo/"):
                 echo_data = request.path[6:]
-                response = f"HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: {len(echo_data)}\r\n\r\n{echo_data}"
+                response = sendValidResponse(echo_data)
             elif request.path.startswith("/user-agent"):
                 parsedData = request.userAgent.strip().split(": ")[1]
-                print(parsedData)
-                response = f"HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: {len(parsedData)}\r\n\r\n{parsedData}"
+                response = sendValidResponse(parsedData)
             else:
-                response = f"HTTP/1.1 404 NOT FOUND\r\n\r\n" 
-            
-            conn.send(response.encode('utf-8'))
+                response = HTTPNotFound
+            conn.send(response)
             
 
         if not data:
             break  
-
-
-
 
 
 if __name__ == "__main__":
