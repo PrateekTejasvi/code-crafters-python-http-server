@@ -28,20 +28,21 @@ def main():
             data = conn.recv(1024)
             request = decodeData(data)
             if request.path == '/':
-                conn.send(b"HTTP/1.1 200 OK\r\n\r\n")
-            elif "/echo/" in request.path:
-                echo= request.path.split("/")
-                print(echo)
-                response = f"HTTP/1.1 200 OK\r\n\r\nContent-Type: text/plain\r\n\r\nContent-Length: {len(echo[2])}\r\n\r\n{echo[2]}".encode('utf-8')
-                conn.send(response)
+                response = f"HTTP/1.1 200 OK\r\n\r\n"
+            elif request.path.startswith("/echo/"):
+                echo_data = request.path[6:]
+                print(echo_data)
+                response = f"HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: {len(echo_data)}\r\n\r\n{echo_data}"
             else:
-                conn.send(b"HTTP/1.1 404 NOT FOUND\r\n\r\n")
+                response = f"HTTP/1.1 404 NOT FOUND\r\n\r\n" 
             
+            conn.send(response.encode('utf-8'))
             
 
 
-            if not data:
-                break   
+        if not data:
+            break  
+
 
 
 
