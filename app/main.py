@@ -26,8 +26,9 @@ def sendValidResponse(data):
     return send_resp
 
 def handleConnections(conn):
-     while True:
-        with conn:
+    
+    with conn:
+        while True:
             data = conn.recv(1024)
             request = decodeData(data)
             if request.path == '/':
@@ -41,17 +42,13 @@ def handleConnections(conn):
             else:
                 response = f"HTTP/1.1 404 NOT FOUND\r\n\r\n".encode('utf-8')
             conn.send(response)
-            
-
-        if not data:
-            break  
 
 def main():
     try: 
         while True:
             conn, addr = server_socket.accept()  # wait for client
             print(f"Connected to: {addr}")
-            client_thread = threading.Thread(handleConnections, args=[conn])
+            client_thread = threading.Thread(handleConnections, args=(conn,))
             client_thread.start()
     finally:
         server_socket.close()
