@@ -1,5 +1,6 @@
 # Uncomment this to pass the first stage
 import socket
+import threading
 
 server_socket = socket.create_server(("localhost", 4221), reuse_port=True)
 print("listening on port 4221:")        
@@ -24,10 +25,8 @@ def sendValidResponse(data):
     send_resp = f"HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: {len(data)}\r\n\r\n{data}".encode('utf-8')
     return send_resp
 
-
-def main():
-
-    while True:
+def handleConnections():
+     while True:
         with conn:
             data = conn.recv(1024)
             request = decodeData(data)
@@ -46,6 +45,13 @@ def main():
 
         if not data:
             break  
+
+def main():
+    threading.Thread(target=handleConnections,args=(server_socket,),daemon=True).start()
+
+
+
+   
 
 
 if __name__ == "__main__":
